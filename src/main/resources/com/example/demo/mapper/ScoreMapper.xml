@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.ScoreMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.po.Score">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="score" column="score"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,user_id,course_id,score
+    </sql>
+    <update id="updateScoreToMax">
+        update score
+        set score = "100"
+        where id = #{scoreId}
+    </update>
+    <select id="getScoreList" resultType="com.example.demo.entity.vo.ScoreVO">
+        select s.id, s.score, c.course_no, c.course_name
+        from score s
+                 left join course c on s.course_id = c.id
+        where s.user_id = #{studentId}
+
+    </select>
+</mapper>

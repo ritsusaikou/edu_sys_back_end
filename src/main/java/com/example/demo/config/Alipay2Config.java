@@ -1,0 +1,23 @@
+package com.example.demo.config;
+
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import lombok.Data;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+
+@Configuration
+public class Alipay2Config {
+    public static String URL = "https://openapi-sandbox.dl.alipaydev.com/gateway.do";
+    public static String APPID = "9021000166656982";
+    public static String PRIVATE_KEY = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCgzX/j1fjCTglvxY+9i+r/mPyEEgmTlY1ywFqPqqt4bRSHNQzBzGd6vPyYYQOxh4C8I1oskCuo0Ln6BndcXuWBFoVEFmIbHdxQDWMfHnmTnA6Rgg3Z/pBhP5Uwl5JAAswUo1nlm6NC+9SI2kXwGB9kM2L2Lavk/dtnHMt2UOL+CgZYlVpB/RtJwdv0unRrXJ+QPrRoR12Xwm7+G2e0wWQK2ktmah8l9t12sC1GhzAFjVp6+rAy2FqfbOGFcChmlgoKnIUvenoPxtU/YvRyN9fJIT5DBFqbK4dU80L2SwctZ/h1ATyEZgl70oJ+v0mwJwopbKzPXFI+cWQVQqGNIp4PAgMBAAECggEBAJA5QGd81myPyW7yZwW+pLsy3+kktGomTIOLeq44iSqtyyepsRNw3a78KiIRgVqNCi20F4C4ni//ZY6Wlh/HDVlGdain2r4vfhZeq3SRxMFbysU/PGU1KRHQEWNPzuCSobAxAsQpX7kIXYuRGgFJ4X3hiPT76ZytA0fsT6CC09S8hQL7c4kLJUVz6VY3qgF83E+FQTg+bZSiGS8abLV0DDV7FeC4Ce0WBNWSUC3LaU/ui4FsQzFpaRP+KmLTUaCNCLADUwE6jdfMyH5bg3jUAXBv/xaF/KSpwKL8BgQqj1c/txZyArDbXJ0o6BTwP6iR/P3/PH3eoLDGwNWdj3RWueECgYEAz0oxHVGBR9/jCPqaBOiSi0KO24xf+2EY/wee8zVfzwkKtn6E7Nw3rf/UfgG4SwvFnVBfDn/nTu8obYEtuREbRHyc1AOJf5Xq+0LL7TTwV5VLYmJebPp4EOV4wlU5JZ6bUFwjylZHReYFvK5wN8hKuqdfJpVm35R/30yL6sxpOyUCgYEAxpbQApg8Nkq773NxAZj0JJcgZneGtQlZ/XwkFGeLzZVeb45pyvFEL4A7+s4oAZVrSejzGWh28v89Vcl9zaaznFUROMYBQOp0vGjlRmN8T6GQNlVPqeI+0vjW4Y7luKVLPnt2ZYCvrpc4xt5L4RsxWkG74RJQCvW6CyZXMMKu6CMCgYAYc+UVU08P3n5WydEvcQwQd3qItaeA7PRY6Vo70HkL4EIuQwCFPHkpAnvbnXJTEAFwzFFaUYZEznuTZ2Cway8vRg/uBrjKnzHIEBokUlFj042//mCrNGTDgX5cVldWc75YnXXvYXwo57iXiHBedDc0i5fy4j7vcwIeolYDDbgALQKBgQCQcVlSyc/h3XHctKbZdpr9kj6qyP1d6DNgQE8t2DLDkYVitr8UMXBa7Haz8gb/P+MNmzZWoLkD/cpq/2dVkY7KgsVH+h0nTmEiOVmqXOoqMWVnX53V/w2a/gute/Zy2ydjhwGSyor9/lf5re6bCOBYub8h8ePuVNTBD14TxUba6QKBgE9fkLWp36FDbB3aWCgV80DGOj8DKkWYKlLRkUUXNmYGIR4Hh+XuQJc+GeFj/2ptJEhs6PtW4OuKqo7Gljh0Hoym3gpnS2mFjzlNX38ZMcoIuYfXaRA4JE7DuRtlzqGWua8UbCgR/PSwuXh1QCO6lAS7J6TZGeBDxrlLbCgFTIXQ";
+    public static String CHARSET = "UTF-8";
+    public static String SIGN_TYPE = "RSA2";
+    public static String ALIPAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoM1/49X4wk4Jb8WPvYvq/5j8hBIJk5WNcsBaj6qreG0UhzUMwcxnerz8mGEDsYeAvCNaLJArqNC5+gZ3XF7lgRaFRBZiGx3cUA1jHx55k5wOkYIN2f6QYT+VMJeSQALMFKNZ5ZujQvvUiNpF8BgfZDNi9i2r5P3bZxzLdlDi/goGWJVaQf0bScHb9Lp0a1yfkD60aEddl8Ju/htntMFkCtpLZmofJfbddrAtRocwBY1aevqwMthan2zhhXAoZpYKCpyFL3p6D8bVP2L0cjfXySE+QwRamyuHVPNC9ksHLWf4dQE8hGYJe9KCfr9JsCcKKWysz1xSPnFkFUKhjSKeDwIDAQAB";
+
+    @Bean
+    public AlipayClient alipayClient() {
+        return new DefaultAlipayClient(URL, APPID, PRIVATE_KEY, "json", CHARSET, ALIPAY_PUBLIC_KEY, "RSA2");
+    }
+}

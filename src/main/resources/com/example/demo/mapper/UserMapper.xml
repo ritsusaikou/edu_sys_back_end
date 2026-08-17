@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.po.User">
+        <result property="id" column="id"/>
+        <result property="role" column="role"/>
+        <result property="name" column="name"/>
+        <result property="age" column="age"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="birthdate" column="birthdate"/>
+        <result property="photo" column="photo"/>
+        <result property="password" column="password"/>
+        <result property="userNo" column="user_no"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,role,name,age,phone,email,
+        birthdate,photo,password,user_no
+    </sql>
+    <insert id="registerByPhone">
+        insert into user(id, role, name, age, phone, email, birthdate, photo, password,
+                         user_no) value (#{id},#{role},#{name},#{age},#{phone},#{email},#{birthdate},#{photo},#{password},#{userNo});
+    </insert>
+    <update id="update">
+        update user
+        set role=#{role},
+            name=#{name},
+            age=#{age},
+            phone=#{phone},
+            email=#{email},
+            birthdate=#{birthdate},
+            photo=#{photo},
+            user_no=#{userNo}
+        where id = #{id};
+
+    </update>
+    <delete id="deleteById">
+        delete
+        from user
+        where id = #{id}
+    </delete>
+    <select id="getMaxId" resultType="java.lang.Long">
+        select max(id)
+        from user;
+    </select>
+    <select id="getInfo" resultType="com.example.demo.entity.vo.UserVO">
+        SELECT id,
+               role,
+               name,
+               age,
+               phone,
+               email,
+               birthdate,
+               photo,
+               user_no
+        FROM `user`
+        WHERE id = #{id}
+    </select>
+    <select id="getUserById" resultType="com.example.demo.entity.po.User">
+        select *
+        from user
+        where id = #{id}
+    </select>
+    <select id="getPasswordById" resultType="java.lang.String">
+        select password
+        from user
+        where id = #{id}
+    </select>
+    <select id="getPasswordByEmail" resultType="java.lang.String">
+        select password
+        from user
+        where email = #{email}
+    </select>
+    <select id="getPasswordByPhone" resultType="java.lang.String">
+        select password
+        from user
+        where phone = #{phone}
+    </select>
+    <select id="getIdByEmail" resultType="java.lang.Long">
+        select id
+        from user
+        where email = #{email}
+    </select>
+    <select id="getIdByPhone" resultType="java.lang.Long">
+        select id
+        from user
+        where phone = #{phone}
+    </select>
+    <select id="getUserByPhone" resultType="com.example.demo.entity.po.User">
+        select *
+        from user
+        where phone = #{phone}
+    </select>
+    <select id="getTeacherList" resultType="com.example.demo.entity.vo.TeacherVO">
+        select id as teacher_id, name as teacher_name, user_no as teacher_no
+        from user
+        where role = 2
+    </select>
+
+</mapper>
