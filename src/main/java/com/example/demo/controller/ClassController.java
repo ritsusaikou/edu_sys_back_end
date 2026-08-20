@@ -8,22 +8,20 @@ import com.example.demo.entity.vo.Result;
 import com.example.demo.exception.BusinessException;
 import com.example.demo.service.ClassService;
 import com.example.demo.service.impl.ClassServiceImpl;
-import com.sun.org.apache.regexp.internal.RE;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @SaCheckLogin
 @RequestMapping("/class")
 @RestController
 public class ClassController {
-    private final ClassService classServiceImpl;
 
-    @Autowired
-    public ClassController(ClassServiceImpl classServiceImpl) {
-        this.classServiceImpl = classServiceImpl;
+    private final ClassService classService;
+
+    public ClassController(@Qualifier("classServiceImpl") ClassService classService) {
+        this.classService = classService;
     }
 
     @PutMapping("/add")
@@ -31,14 +29,14 @@ public class ClassController {
         if (classDTO == null) {
             throw new BusinessException("传入参数为空");
         }
-        Long id = classServiceImpl.getMaxId();
+        Long id = classService.getMaxId();
         if (id == null) {
             id = 1L;
         } else {
             id += 1;
         }
         classDTO.setId(id);
-        classServiceImpl.add(classDTO);
+        classService.add(classDTO);
         return Result.successMsg("添加班级成功");
     }
 
@@ -48,7 +46,7 @@ public class ClassController {
                 || id == 0L) {
             throw new BusinessException("参数id异常");
         }
-        classServiceImpl.deleteById(id);
+        classService.deleteById(id);
         return Result.successMsg("删除班级成功");
     }
 
@@ -58,7 +56,7 @@ public class ClassController {
                 || classDTO.getId() == null) {
             throw new BusinessException("参数异常");
         }
-        classServiceImpl.update(classDTO);
+        classService.update(classDTO);
         return Result.successMsg("修改班级成功");
     }
 
@@ -68,7 +66,7 @@ public class ClassController {
                 || id == 0L) {
             throw new BusinessException("参数id异常");
         }
-        ClassVO classVO = classServiceImpl.getInfo(id);
+        ClassVO classVO = classService.getInfo(id);
         return Result.success("成功获取班级信息", classVO);
     }
 
@@ -83,8 +81,8 @@ public class ClassController {
             pageSize = 1;
         }
 
-        List<ClassVO> classVOList = classServiceImpl.getPage(currentPage, pageSize);
-        Long totalCount = classServiceImpl.getCount();
+        List<ClassVO> classVOList = classService.getPage(currentPage, pageSize);
+        Long totalCount = classService.getCount();
         Page classPage = new Page(currentPage, pageSize, totalCount, classVOList);
         return Result.success("成功获取班级页", classPage);
     }

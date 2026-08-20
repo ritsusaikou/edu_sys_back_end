@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import com.example.demo.entity.dto.PasswordDTO;
 import com.example.demo.entity.dto.UserDTO;
-import com.example.demo.entity.dto.UserUpdateDTO;
 import com.example.demo.entity.po.User;
 import com.example.demo.entity.vo.TeacherVO;
 import com.example.demo.entity.vo.UserVO;
@@ -22,10 +21,6 @@ public interface UserService {
 
     void deleteById(Long id);
 
-    void update(UserUpdateDTO userUpdateDTO);
-
-    UserVO getInfo(Long id) throws Exception;
-
     User getUserById(Long id) throws Exception;
 
     String getPasswordById(Long id) throws Exception;
@@ -43,4 +38,19 @@ public interface UserService {
     List<TeacherVO> getTeacherList();
 
     void updatePassword(PasswordDTO passwordDTO);
+
+
+    void create(UserDTO userDTO);
+
+    void delete(UserDTO userDTO);
+
+    void update(UserDTO userDTO);
+
+    User select(UserDTO userDTO);
+
+    void register(UserDTO userDTO);
+
+    UserVO login(String account, String password);
+
+    UserVO info();
 }

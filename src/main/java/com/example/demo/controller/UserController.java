@@ -3,63 +3,42 @@ package com.example.demo.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.example.demo.entity.dto.*;
-import com.example.demo.entity.po.User;
 import com.example.demo.entity.vo.Result;
-import com.example.demo.entity.vo.TeacherVO;
 import com.example.demo.entity.vo.UserVO;
 import com.example.demo.exception.BusinessException;
 import com.example.demo.service.UserService;
 
-import com.example.demo.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.DigestUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
     private final UserService userService;
 
     public UserController(@Qualifier("userServiceImpl") UserService userService) {
         this.userService = userService;
     }
 
-
-    @PostMapping("/updatePassword")
-    public Result updatePassword(@RequestBody PasswordDTO passwordDTO){
-        userService.updatePassword(passwordDTO);
-        return Result.successMsg("修改密码成功");
-    }
-
-    @PostMapping("/registerByPhone")
-    public Result regiesterByPhone(@RequestBody UserDTO userDTO) throws Exception {
-        if (userDTO == null) {
-            throw new BusinessException("参数不能为空");
-        }
-        User user = userService.getuserByPhone(userDTO.getPhone());
-        if (user != null) {
-            throw new BusinessException("该手机号已注册");
-        }
-        String password = userDTO.getPassword();
-        if (!StringUtils.hasText(password)) { // 如果密码为空（密码）
-            throw new BusinessException("密码传入不能为空");
-        } else {
-            userDTO.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
-        }
-        Long id = userService.getMaxId();
-        if (id == null) {
-            id = 1L;
-        } else {
-            id += 1;
-        }
-        userDTO.setId(id);
-        userService.registerByPhone(userDTO);
+    @PostMapping("/register")
+    public Result regiester(@RequestBody UserDTO userDTO) throws Exception {
+        userService.register(userDTO);
         return Result.successMsg(" 注册成功");
     }
 
+    @GetMapping("/info")
+    public Result info() throws Exception {
+        UserVO userVO = userService.info();
+        return Result.success("成功获取用户信息", userVO);
+    }
+
+    @PostMapping("/updatePassword")
+    public Result updatePassword(@RequestBody PasswordDTO passwordDTO) {
+        userService.updatePassword(passwordDTO);
+        return Result.successMsg("修改密码成功");
+    }
 
     @DeleteMapping("/deleteById")
     public Result deleteById(@RequestParam Long id) {
@@ -68,53 +47,33 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public Result update(@RequestBody UserUpdateDTO userUpdateDTO) throws Exception {
-        if (userUpdateDTO == null) {
-            throw new BusinessException("传入参数为空");
-        } else {
-            userService.update(userUpdateDTO);
-            return Result.successMsg("修改成功");
-        }
-    }
-
-    @GetMapping("/getInfo")
-    public Result getInfo() throws Exception {
-        Long id = StpUtil.getLoginIdAsLong();
-        if (id == null) {
-            throw new BusinessException("当前会话id为空");
-        } else if (id == 0L) {
-            throw new BusinessException("当前会话id不能等于0");
-        } else {
-            UserVO userVO = userService.getInfo(id);
-            return Result.success("成功获取用户信息", userVO);
-        }
+    public Result update(@RequestBody UserDTO userDTO) throws Exception {
+        userService.update(userDTO);
+        return Result.successMsg("修改成功");
     }
 
 
-    @PostMapping("/loginById")
-    public Result loginById(@RequestBody UserLoginDTO userLoginDTO) throws Exception {
+    @PostMapping("/login")
+    public Result login(@RequestBody UserLoginDTO userLoginDTO) throws BusinessException {
+        // 基础参数校验
         if (userLoginDTO == null) {
-            throw new BusinessException("传入参数为空");
+            throw new BusinessException("请求参数不能为空");
         }
-        Long id = userLoginDTO.getId();
-        if (id == null) {
-            throw new BusinessException("id不能为空");
+        String account = userLoginDTO.getAccount();
+        String password = userLoginDTO.getPassword();
+        if (account == null || account.trim().isEmpty()) {
+            throw new BusinessException("账号不能为空");
         }
-        if (id == 0L) {
-            throw new BusinessException("id不能为0");
+        if (password == null || password.trim().isEmpty()) {
+            throw new BusinessException("密码不能为空");
         }
-        String pwd = userLoginDTO.getPassword();
-        if (!StringUtils.hasText(pwd)) {
-            throw new BusinessException("传入密码没有内容");
-        }
-        String md5Pwd = DigestUtils.md5DigestAsHex(pwd.getBytes());
-        String dbPwd = userService.getPasswordById(id);
-        if (md5Pwd.equals(dbPwd)) {
-            StpUtil.login(userLoginDTO.getId());
-            return Result.successMsg("登录成功");
-        }
-        return Result.error("密码不正确");
+        account = account.trim();
+        password = password.trim();
+
+        UserVO userInfo = userService.login(account, password);
+        return Result.success("登录成功", userInfo);
     }
+
 
     @PostMapping("/loginByAccount")   // 通过手机号或用户号登录
     public Result loginByAccount(@RequestBody UserLoginByAccountDTO userLoginByAccountDTO) throws Exception {
@@ -128,7 +87,7 @@ public class UserController {
         String dbPwd;
         Long id;
         if (userLoginByAccountDTO.getAccount().contains("@")) {
-            id = userService.getIdByEmail(account);
+            id = userService.select(new UserDTO()).getId();
             dbPwd = userService.getPasswordByEmail(account);
         } else {
             id = userService.getIdByPhone(account);

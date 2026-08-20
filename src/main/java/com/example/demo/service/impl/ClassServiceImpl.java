@@ -1,16 +1,12 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.dto.ClassDTO;
-import com.example.demo.entity.po.Class;
 import com.example.demo.entity.vo.ClassVO;
-import com.example.demo.exception.BusinessException;
 import com.example.demo.mapper.UserMapper;
-import com.example.demo.service.ClassService;
 import com.example.demo.mapper.ClassMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,7 +15,7 @@ import java.util.List;
  * @createDate 2026-07-23 09:19:32
  */
 @Service
-public class ClassServiceImpl implements ClassService {
+public class ClassServiceImpl implements com.example.demo.service.ClassService {
     private final ClassMapper classMapper;
     private final UserMapper userMapper;
 

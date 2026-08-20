@@ -26,28 +26,78 @@
         insert into user(id, role, name, age, phone, email, birthdate, photo, password,
                          user_no) value (#{id},#{role},#{name},#{age},#{phone},#{email},#{birthdate},#{photo},#{password},#{userNo});
     </insert>
-    <update id="update">
-        update user
-        set role=#{role},
-            name=#{name},
-            age=#{age},
-            phone=#{phone},
-            email=#{email},
-            birthdate=#{birthdate},
-            photo=#{photo},
-            user_no=#{userNo}
-        where id = #{id};
-
-    </update>
+    <insert id="create">
+        insert into user(id, role, name, age, phone, email, birthdate, photo, password,
+                         user_no) value (#{id},#{role},#{name},#{age},#{phone},#{email},#{birthdate},#{photo},#{password},#{userNo});
+    </insert>
     <update id="updatePassword">
         update user
         set password = #{newPwd}
         where id = #{userId}
     </update>
+    <update id="update">
+        update user
+        <set>
+            <if test="role != null">
+                role = #{role},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="birthdate != null">
+                birthdate = #{birthdate},
+            </if>
+            <if test="photo != null and photo != ''">
+                photo = #{photo},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="userNo != null and userNo != ''">
+                user_no = #{userNo},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
     <delete id="deleteById">
         delete
         from user
         where id = #{id}
+    </delete>
+    <delete id="delete">
+        delete from user
+        <where>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+            <if test="userNo != null and userNo != ''">
+                AND user_no = #{userNo}
+            </if>
+            <if test="role != null">
+                AND role = #{role}
+            </if>
+            <if test="age != null">
+                AND age = #{age}
+            </if>
+            <if test="phone != null and phone != ''">
+                AND phone = #{phone}
+            </if>
+            <if test="email != null and email != ''">
+                AND email = #{email}
+            </if>
+            <if test="name != null and name != ''">
+                AND name = #{name}
+            </if>
+        </where>
     </delete>
     <select id="getMaxId" resultType="java.lang.Long">
         select max(id)
@@ -105,6 +155,32 @@
         select id as teacher_id, name as teacher_name, user_no as teacher_no
         from user
         where role = 2
+    </select>
+    <select id="select" resultType="com.example.demo.entity.po.User">
+        select * from user
+        <where>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+            <if test="userNo != null and userNo != ''">
+                AND user_no = #{userNo}
+            </if>
+            <if test="role != null">
+                AND role = #{role}
+            </if>
+            <if test="age != null">
+                AND age = #{age}
+            </if>
+            <if test="phone != null and phone != ''">
+                AND phone = #{phone}
+            </if>
+            <if test="email != null and email != ''">
+                AND email = #{email}
+            </if>
+            <if test="name != null and name != ''">
+                AND name = #{name}
+            </if>
+        </where>
     </select>
 
 </mapper>

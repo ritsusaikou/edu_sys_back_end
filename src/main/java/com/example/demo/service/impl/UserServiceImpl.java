@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import com.example.demo.entity.dto.PasswordDTO;
 import com.example.demo.entity.dto.UserDTO;
+import com.example.demo.entity.dto.UserLoginDTO;
 import com.example.demo.entity.dto.UserUpdateDTO;
 import com.example.demo.entity.po.User;
 import com.example.demo.entity.vo.Result;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,20 +50,7 @@ public class UserServiceImpl implements UserService {
         userMapper.deleteById(id);
     }
 
-    @Override
-    public void update(UserUpdateDTO userUpdateDTO) {
-        userMapper.update(userUpdateDTO);
-    }
 
-    @Override
-    public UserVO getInfo(Long id) throws Exception {
-        UserVO userVO = userMapper.getInfo(id);
-        if (userVO == null) {
-            throw new BusinessException("用户没有记录");
-        } else {
-            return userVO;
-        }
-    }
 
     @Override
     public User getUserById(Long id) throws Exception {
@@ -174,6 +162,134 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    // CRUD
+    @Override
+    public void create(UserDTO userDTO) {
+        userMapper.create(userDTO);
+    }
+
+    @Override
+    public void delete(UserDTO userDTO) {
+        if (userDTO.getId() == null && userDTO.getUserNo() == null) {
+            throw new BusinessException("删除条件不能为空，不能全表删除");
+        }
+        userMapper.delete(userDTO);
+    }
+
+    @Override
+    public void update(UserDTO userDTO) {
+        userMapper.update(userDTO);
+    }
+
+    @Override
+    public User select(UserDTO userDTO) {
+        return userMapper.select(userDTO);
+    }
+
+    @Override
+    public void register(UserDTO userDTO) {
+        boolean hasPhone = StringUtils.hasText(userDTO.getPhone());
+        boolean hasEmail = StringUtils.hasText(userDTO.getEmail());
+
+        if (hasPhone && hasEmail) {
+            throw new BusinessException("不能同时传入手机号和邮箱");
+        }
+        if (!hasPhone && !hasEmail) {
+            throw new BusinessException("手机号或邮箱至少填一项");
+        }
+
+        String password = userDTO.getPassword();
+        if (!StringUtils.hasText(password)) {
+            throw new BusinessException("必须填入密码");
+        }
+
+        User existUser = userMapper.select(userDTO);
+        if (existUser != null) {
+            if (hasPhone) {
+                throw new BusinessException("该手机号已注册");
+            } else {
+                throw new BusinessException("该邮箱已注册");
+            }
+        }
+        userDTO.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
+        userMapper.create(userDTO);
+    }
+
+    @Override
+    public UserVO login(String account, String password) {
+        UserDTO queryDTO = new UserDTO();
+
+        if (isEmail(account)) {
+            queryDTO.setEmail(account);
+        } else if (isPhone(account)) {
+            queryDTO.setPhone(account);
+        } else {
+            queryDTO.setUserNo(account);
+        }
+
+        User userPO = this.select(queryDTO);
+
+        if (userPO == null) {
+            throw new BusinessException("账号不存在");
+        }
+        //JDK8 安全指定UTF‑8
+        byte[] pwdBytes = password.getBytes(StandardCharsets.UTF_8);
+        String inputMd5 = DigestUtils.md5DigestAsHex(pwdBytes);
+
+        if (!Objects.equals(inputMd5, userPO.getPassword())) {
+            throw new BusinessException("密码错误");
+        }
+
+        StpUtil.login(userPO.getId());
+        return convertPoToVo(userPO);
+    }
+
+    @Override
+    public UserVO info() {
+        Long id = StpUtil.getLoginIdAsLong();
+        if (id == null) {
+            throw new BusinessException("当前会话id为空");
+        } else if (id <= 0L) {
+            throw new BusinessException("当前会话id非法");
+        } else {
+            UserDTO queryDTO = new UserDTO();
+            queryDTO.setId(id);
+            User selected = select(queryDTO);
+            if(selected != null){
+                return convertPoToVo(selected);
+            }else {
+                throw new BusinessException("用户信息不存在");
+            }
+        }
+    }
+
+
+    // 工具方法
+    private boolean isEmail(String str) {
+        //jdk8完全支持这个正则
+        String reg = "^[\\w.-]+@[\\w-]+\\.[\\w]{2,}$";
+        return str.matches(reg);
+    }
+
+    private boolean isPhone(String str) {
+        //中国大陆手机号正则
+        String reg = "^1[3-9]\\d{9}$";
+        return str.matches(reg);
+    }
+
+    private UserVO convertPoToVo(User po) {
+        UserVO vo = new UserVO();
+        vo.setId(po.getId());
+        vo.setRole(po.getRole());
+        vo.setUserNo(po.getUserNo());
+        vo.setName(po.getName());
+        vo.setAge(po.getAge());
+        vo.setPhone(po.getPhone());
+        vo.setEmail(po.getEmail());
+        vo.setBirthdate(po.getBirthdate());
+        vo.setPhoto(po.getPhoto());
+        return vo;
+    }
 
 }
 

@@ -1,6 +1,8 @@
 server:
   port: 9999
 
+
+
 spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/test
@@ -9,6 +11,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     Jackson:
       default-property-inclusion: always
+    aop:
+      proxy-target-class: true
 mybatis:
   configuration:
     # SQL日志打印

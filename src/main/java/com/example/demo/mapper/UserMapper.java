@@ -22,9 +22,6 @@ public interface UserMapper {
     Long getMaxId();
 
     void deleteById(Long id);
-
-    void update(UserUpdateDTO userUpdateDTO);
-
     UserVO getInfo(Long id);
 
     User getUserById(Long id);
@@ -43,7 +40,22 @@ public interface UserMapper {
 
     List<TeacherVO> getTeacherList();
 
+
+
     void updatePassword(@Param("userId") Long userId,@Param("newPwd") String newPwd);
+
+
+
+
+    User select(UserDTO userDTO);
+
+    void create(UserDTO userDTO);
+
+    void delete(UserDTO userDTO);
+
+    void updatePassword(UserDTO userDTO);
+
+    void update(UserDTO userDTO);
 }
 
 
