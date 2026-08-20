@@ -1,11 +1,12 @@
 package com.example.demo.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.stp.StpUtil;
 import com.example.demo.entity.dto.CourseDTO;
-import com.example.demo.entity.po.Course;
 import com.example.demo.entity.vo.CourseVO;
 import com.example.demo.entity.vo.Page;
 import com.example.demo.entity.vo.Result;
+import com.example.demo.entity.vo.TaughtCourseVO;
 import com.example.demo.exception.BusinessException;
 import com.example.demo.service.CourseService;
 import com.example.demo.service.impl.CourseServiceImpl;
@@ -88,6 +89,13 @@ public class CourseController {
         Page coursePage = new Page(currentPage, pageSize, totalCount, courseVOList);
 
         return Result.success("成功获取课程页", coursePage);
+    }
+
+    @GetMapping("/getTaughtCourseList")
+    public Result getTaughtCourseList() {
+        long userId = StpUtil.getLoginIdAsLong();
+        List<TaughtCourseVO> taughtCourseList = courseServiceImpl.getTaughtCourseList(userId);
+        return Result.success("成功获取任教课列表",taughtCourseList);
     }
 
 

@@ -50,11 +50,9 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Override
-    public ClassVO getInfo(Long id) throws Exception {
+    public ClassVO getInfo(Long id)  {
         ClassVO classVO = classMapper.getInfo(id);
-        if (classVO == null) {
-            throw new BusinessException("班级记录为空");
-        }
+
         return classVO;
     }
 

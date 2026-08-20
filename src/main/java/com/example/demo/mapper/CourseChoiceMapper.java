@@ -1,5 +1,6 @@
 package com.example.demo.mapper;
 
+import com.example.demo.entity.vo.ChoiceVO;
 import com.example.demo.entity.vo.CourseChoiceVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public interface CourseChoiceMapper {
 
-    List<CourseChoiceVO> getCourseChoiceVOList(@Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
+    List<CourseChoiceVO> getCourseChoiceVOs(@Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
 
     List<Long> getChosenCourseIdList(@Param("studentId") Long studentId);
 
@@ -23,9 +24,15 @@ public interface CourseChoiceMapper {
 
     Long getMaxId();
 
-    void dropCourse(@Param("studentId") Long studentId, @Param("courseId") Long courseId);
+    void dropCourse(@Param("courseChoiceId") Long courseChoiceId);
 
     List<CourseChoiceVO> getChosenCourseList(@Param("studentId") Long studentId);
+
+    ChoiceVO getById(@Param("courseChoiceId") Long courseChoiceId);
+
+    List<CourseChoiceVO> getAvailableCourseVOsByName(@Param("offset") Integer offset, @Param("pageSize") Integer pageSize, @Param("courseName") String courseName);
+
+    Long getTotalCountByName(String courseName);
 }
 
 

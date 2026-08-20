@@ -58,4 +58,9 @@
         select count(*)
         from course
     </select>
+    <select id="getTaughtCourseList" resultType="com.example.demo.entity.vo.TaughtCourseVO">
+        select id as course_id, course_no, course_name
+        from course
+        where user_id = #{userId}
+    </select>
 </mapper>

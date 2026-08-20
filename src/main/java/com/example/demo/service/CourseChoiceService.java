@@ -11,13 +11,17 @@ import java.util.List;
  */
 public interface CourseChoiceService {
 
-    List<CourseChoiceVO> getCourseChoiceVOList(Long studentId, Integer currentPage, Integer pageSize);
+    List<CourseChoiceVO> getCourseChoiceVOs(Long studentId, Integer currentPage, Integer pageSize);
 
     Long getTotalCount();
 
     void chooseCourse(Long studentId, Long courseId);
 
-    void dropCourse(Long studentId, Long courseId);
+    void dropCourse(Long courseChoiceId);
 
     List<CourseChoiceVO> getChosenCourseList(Long studentId);
+
+    List<CourseChoiceVO> getCourseChoiceVOs(Long studentId, Integer currentPage, Integer pageSize, String courseName);
+
+    Long getTotalCountByName(String courseName);
 }

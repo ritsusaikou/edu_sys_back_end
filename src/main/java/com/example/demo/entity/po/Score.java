@@ -1,10 +1,13 @@
 package com.example.demo.entity.po;
 
 
+import lombok.Data;
+
 /**
  *
  * @TableName score
  */
+@Data
 public class Score {
     /**
      * 成绩id

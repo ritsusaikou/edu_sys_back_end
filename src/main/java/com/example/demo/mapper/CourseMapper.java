@@ -3,6 +3,7 @@ package com.example.demo.mapper;
 import com.example.demo.entity.dto.CourseDTO;
 import com.example.demo.entity.po.Course;
 import com.example.demo.entity.vo.CourseVO;
+import com.example.demo.entity.vo.TaughtCourseVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -28,6 +29,8 @@ public interface CourseMapper {
     List<CourseVO> getPage(@Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
 
     Long getCount();
+
+    List<TaughtCourseVO> getTaughtCourseList(@Param("userId") Long userId);
 }
 
 

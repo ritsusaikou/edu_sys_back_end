@@ -15,16 +15,43 @@
         id
         ,user_id,course_id,score
     </sql>
+    <insert id="initEmptyScore">
+        insert into score (id, user_id, course_id, score)
+        values (#{scoreId}, #{studentId}, #{courseId}, null)
+    </insert>
     <update id="updateScoreToMax">
         update score
         set score = "100"
         where id = #{scoreId}
     </update>
+    <update id="update">
+        update score
+        set score = #{score}
+        where id = #{scoreId}
+    </update>
+    <delete id="deleteScore">
+        delete
+        from score
+        where user_id = #{studentId}
+          and course_id = #{courseId}
+    </delete>
     <select id="getScoreList" resultType="com.example.demo.entity.vo.ScoreVO">
         select s.id, s.score, c.course_no, c.course_name
         from score s
                  left join course c on s.course_id = c.id
         where s.user_id = #{studentId}
 
+    </select>
+    <select id="getCourseScores" resultType="com.example.demo.entity.vo.CourseScoreVO">
+        select s.id as score_id,s.score,u.name as student_name,u.user_no as student_no,c.major,c.class_no  from score s left join user u on s.user_id = u.id left join class c on u.class_id = c.id where s.course_id = #{courseId}
+    </select>
+    <select id="getMaxId" resultType="java.lang.Long">
+        select max(id)
+        from score
+    </select>
+    <select id="getScore" resultType="com.example.demo.entity.po.Score">
+        select *
+        from score
+        where student_id = #{studentId},course_id = #{courseId}
     </select>
 </mapper>

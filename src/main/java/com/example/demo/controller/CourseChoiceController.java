@@ -7,6 +7,7 @@ import com.example.demo.entity.vo.Page;
 import com.example.demo.entity.vo.Result;
 import com.example.demo.service.CourseChoiceService;
 import com.example.demo.service.impl.CourseChoiceServiceImpl;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,12 +23,19 @@ public class CourseChoiceController {
     }
 
     @GetMapping("/getCourseChoicePage")
-    public Result getCourseChoicePage(@RequestParam(defaultValue = "1") Integer currentPage, @RequestParam(defaultValue = "10") Integer pageSize) {
+    public Result getCourseChoicePage(@RequestParam(defaultValue = "1") Integer currentPage, @RequestParam(defaultValue = "10") Integer pageSize,@RequestParam(defaultValue = "") String courseName) {
         Long studentId = StpUtil.getLoginIdAsLong();
-        List<CourseChoiceVO> courseChoiceVOList = courseChoiceSeriveImpl.getCourseChoiceVOList(studentId, currentPage, pageSize);
-        Long totalCount = courseChoiceSeriveImpl.getTotalCount();
-        Page<List<CourseChoiceVO>> courseChoicePage = new Page<>(currentPage, pageSize, totalCount, courseChoiceVOList);
-        return Result.success("成功查询到选课列表", courseChoicePage);
+        if(StringUtils.hasText(courseName)){
+            List<CourseChoiceVO> courseChoiceVOList = courseChoiceSeriveImpl.getCourseChoiceVOs(studentId, currentPage, pageSize,courseName);
+            Long totalCount = courseChoiceSeriveImpl.getTotalCountByName(courseName);
+            Page<List<CourseChoiceVO>> courseChoicePage = new Page<>(currentPage, pageSize, totalCount, courseChoiceVOList);
+            return Result.success("成功查询到选课列表", courseChoicePage);
+        }else{
+            List<CourseChoiceVO> courseChoiceVOs = courseChoiceSeriveImpl.getCourseChoiceVOs(studentId, currentPage, pageSize);
+            Long totalCount = courseChoiceSeriveImpl.getTotalCount();
+            Page<List<CourseChoiceVO>> courseChoicePage = new Page<>(currentPage, pageSize, totalCount, courseChoiceVOs);
+            return Result.success("成功查询到选课列表", courseChoicePage);
+        }
     }
 
     @PostMapping("/chooseCourse")
@@ -38,9 +46,9 @@ public class CourseChoiceController {
     }
 
     @DeleteMapping("/dropCourse")
-    public Result dropCourse(@RequestParam Long courseId) {
+    public Result dropCourse(@RequestParam Long courseChoiceId) {
         Long studentId = StpUtil.getLoginIdAsLong();
-        courseChoiceSeriveImpl.dropCourse(studentId, courseId);
+        courseChoiceSeriveImpl.dropCourse(courseChoiceId);
         return Result.successMsg("退选成功");
     }
 

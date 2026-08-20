@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.dto.PasswordDTO;
 import com.example.demo.entity.dto.UserDTO;
 import com.example.demo.entity.dto.UserUpdateDTO;
 import com.example.demo.entity.po.User;
@@ -18,7 +19,6 @@ public interface UserService {
     void registerByPhone(UserDTO userDTO);
 
     Long getMaxId();
-
 
     void deleteById(Long id);
 
@@ -41,4 +41,6 @@ public interface UserService {
     User getuserByPhone(String phone);
 
     List<TeacherVO> getTeacherList();
+
+    void updatePassword(PasswordDTO passwordDTO);
 }

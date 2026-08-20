@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.entity.dto.CourseDTO;
 import com.example.demo.entity.po.Course;
 import com.example.demo.entity.vo.CourseVO;
+import com.example.demo.entity.vo.TaughtCourseVO;
 
 import java.util.List;
 
@@ -26,4 +27,6 @@ public interface CourseService {
     List<CourseVO> getPage(Integer currentPage, Integer pageSize);
 
     Long getCount();
+
+    List<TaughtCourseVO> getTaughtCourseList(Long userId);
 }

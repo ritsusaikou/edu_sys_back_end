@@ -39,6 +39,11 @@
         where id = #{id};
 
     </update>
+    <update id="updatePassword">
+        update user
+        set password = #{newPwd}
+        where id = #{userId}
+    </update>
     <delete id="deleteById">
         delete
         from user

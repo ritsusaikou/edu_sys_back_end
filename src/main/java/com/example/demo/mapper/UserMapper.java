@@ -5,6 +5,7 @@ import com.example.demo.entity.dto.UserUpdateDTO;
 import com.example.demo.entity.po.User;
 import com.example.demo.entity.vo.TeacherVO;
 import com.example.demo.entity.vo.UserVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -41,6 +42,8 @@ public interface UserMapper {
     User getUserByPhone(String phone);
 
     List<TeacherVO> getTeacherList();
+
+    void updatePassword(@Param("userId") Long userId,@Param("newPwd") String newPwd);
 }
 
 

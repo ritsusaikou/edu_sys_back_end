@@ -1,5 +1,7 @@
 package com.example.demo.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
+import com.example.demo.entity.dto.PasswordDTO;
 import com.example.demo.entity.dto.UserDTO;
 import com.example.demo.entity.dto.UserUpdateDTO;
 import com.example.demo.entity.po.User;
@@ -10,9 +12,12 @@ import com.example.demo.exception.BusinessException;
 import com.example.demo.service.UserService;
 import com.example.demo.mapper.UserMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Ritsu
@@ -127,6 +132,46 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("无法查询到教师列表");
         }
         return teacherList;
+    }
+
+    @Override
+    public void updatePassword(PasswordDTO passwordDTO) {
+        if (passwordDTO == null) {
+            throw new BusinessException("传入参数为空");
+        }
+
+        String oldPwd = passwordDTO.getOldPwd();
+        if (oldPwd == null || !StringUtils.hasText(oldPwd)) {
+            throw new BusinessException("旧密码不能为空");
+        }
+
+        String newPwd = passwordDTO.getNewPwd();
+        if (newPwd == null || !StringUtils.hasText(newPwd)) {
+            throw new BusinessException("新密码不能为空");
+        }
+        if (Objects.equals(newPwd, oldPwd)) {
+            throw new BusinessException("新密码不能和旧密码一样");
+        }
+
+        String confirmPwd = passwordDTO.getConfirmPwd();
+        if (!Objects.equals(newPwd, confirmPwd)) {
+            throw new BusinessException("两次输入密码不一致");
+        }
+
+        Long userId = StpUtil.getLoginIdAsLong();
+        if (userId == null || userId <= 0) {
+            throw new BusinessException("会话id参数非法");
+        }
+        String oldPwdStored = userMapper.getPasswordById(userId);
+        String oldPwdMd5 = DigestUtils.md5DigestAsHex(oldPwd.getBytes());
+        if (Objects.equals(oldPwdStored, oldPwdMd5)) {
+            String newPwdMd5 = DigestUtils.md5DigestAsHex(newPwd.getBytes());
+            userMapper.updatePassword(userId, newPwdMd5);
+        } else {
+            throw new BusinessException("密码校验失败");
+        }
+
+
     }
 
 

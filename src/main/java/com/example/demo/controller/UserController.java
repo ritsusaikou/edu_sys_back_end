@@ -28,6 +28,12 @@ public class UserController {
     }
 
 
+    @PostMapping("/updatePassword")
+    public Result updatePassword(@RequestBody PasswordDTO passwordDTO){
+        userService.updatePassword(passwordDTO);
+        return Result.successMsg("修改密码成功");
+    }
+
     @PostMapping("/registerByPhone")
     public Result regiesterByPhone(@RequestBody UserDTO userDTO) throws Exception {
         if (userDTO == null) {

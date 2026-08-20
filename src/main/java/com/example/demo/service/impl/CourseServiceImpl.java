@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.dto.CourseDTO;
 import com.example.demo.entity.po.Course;
 import com.example.demo.entity.vo.CourseVO;
+import com.example.demo.entity.vo.TaughtCourseVO;
 import com.example.demo.exception.BusinessException;
 import com.example.demo.service.CourseService;
 import com.example.demo.mapper.CourseMapper;
@@ -70,6 +71,15 @@ public class CourseServiceImpl implements CourseService {
             count = 0L;
         }
         return count;
+    }
+
+    @Override
+    public List<TaughtCourseVO> getTaughtCourseList(Long userId) {
+        if( userId == null || userId <= 0){
+            throw new BusinessException("参数非法");
+        }
+        List<TaughtCourseVO> taughtCourseVOList = courseMapper.getTaughtCourseList(userId);
+        return taughtCourseVOList;
     }
 }
 

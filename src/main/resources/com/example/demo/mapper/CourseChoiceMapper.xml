@@ -17,10 +17,9 @@
     <delete id="dropCourse">
         delete
         from course_choice
-        where user_id = #{studentId}
-          and course_id = #{courseId}
+        where id = #{courseChoiceId}
     </delete>
-    <select id="getCourseChoiceVOList" resultType="com.example.demo.entity.vo.CourseChoiceVO">
+    <select id="getCourseChoiceVOs" resultType="com.example.demo.entity.vo.CourseChoiceVO">
         select c.id      as courseId,
                c.course_no,
                c.course_name,
@@ -49,7 +48,8 @@
         from course_choice
     </select>
     <select id="getChosenCourseList" resultType="com.example.demo.entity.vo.CourseChoiceVO">
-        select cc.course_id,
+        select cc.id     as course_choice_id,
+               cc.course_id,
                c.course_no,
                c.course_name,
                c.user_id as teacher_id,
@@ -61,5 +61,33 @@
                  left join user u on c.user_id = u.id
         where cc.user_id = #{studentId}
         order by cc.course_id desc
+    </select>
+    <select id="getById" resultType="com.example.demo.entity.vo.ChoiceVO">
+        select id as course_choice_id, user_id as student_id, course_id
+        from course_choice
+        where id = #{courseChoiceId}
+    </select>
+    <select id="getAvailableCourseVOsByName" resultType="com.example.demo.entity.vo.CourseChoiceVO">
+        select c.id as course_id,
+        c.course_no,
+        c.course_name,
+        c.user_id as teacher_no,
+        u.name as teacher_name
+        from course c
+        left join user u on c.user_id = u.id
+        <where>
+            <if test="courseName != null and courseName != ''">
+                AND c.course_name LIKE CONCAT('%',#{courseName},'%')
+            </if>
+        </where>
+        order by c.id desc limit #{offset}, #{pageSize}
+    </select>
+    <select id="getTotalCountByName" resultType="java.lang.Long">
+        select count(*) from course c
+        <where>
+            <if test="courseName != null and courseName != ''">
+                AND c.course_name LIKE CONCAT('%',#{courseName},'%')
+            </if>
+        </where>
     </select>
 </mapper>

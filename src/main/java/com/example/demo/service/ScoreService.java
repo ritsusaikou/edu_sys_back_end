@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.vo.CourseScoreVO;
 import com.example.demo.entity.vo.ScoreVO;
 
 import java.util.List;
@@ -14,4 +15,12 @@ public interface ScoreService {
     List<ScoreVO> getScoreList(Long studentId);
 
     void updateScoreToMax(Long scoreId);
+
+    List<CourseScoreVO> getCourseScores(Long courseId);
+
+    void initEmptyScore(Long studentId, Long courseId);
+
+    void deleteScore(Long courseId, Long studentId);
+
+    void update(Long scoreId, String score1);
 }

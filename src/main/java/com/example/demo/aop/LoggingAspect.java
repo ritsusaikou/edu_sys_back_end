@@ -2,13 +2,11 @@ package com.example.demo.aop;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
-// Slf4j是对log.info的注释
 @Slf4j
 @Aspect
 @Component
